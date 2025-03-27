@@ -1,0 +1,32 @@
+/* Authentication Dropdown Styles */
+.auth-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.auth-dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background-color: #f9f9f9;
+    min-width: 350px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1000;
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: 10px;
+}
+
+.auth-dropdown:hover .auth-dropdown-content,
+.auth-dropdown-content:hover {
+    display: block;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .auth-dropdown-content {
+        min-width: 300px;
+        right: -50px; /* Adjust for mobile screens */
+    }
+}
