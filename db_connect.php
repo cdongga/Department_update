@@ -9,7 +9,7 @@ $password = ""; // Default password (leave empty for XAMPP)
 $database = "department_store"; // Change this to your database name
 
 // Create Connection
-$conn = new mysqli($servername, $username, $password, $database);
+$connection = new mysqli($servername, $username, $password, $database);
 
 // Check Connection
 //if ($conn->connect_error) {

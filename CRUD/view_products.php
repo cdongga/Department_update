@@ -3,7 +3,7 @@ session_start();
 require '../db_connect.php';
 
 $sql = "SELECT * FROM products";
-$result = $conn->query($sql);
+$result = $connection->query($sql);
 ?>
 
 <!DOCTYPE html>

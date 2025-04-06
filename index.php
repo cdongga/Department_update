@@ -26,6 +26,7 @@ session_start();
             <h1><a href="index.php">SHOPAHOLICS</a></h1>
         </div>
         
+        
         <ul class="nav-menu">
             <?php
             $menu_items = [
@@ -54,36 +55,44 @@ session_start();
             <div class="user-dropdown">
                 <i class="fas fa-user"></i>
                 <div class="user-dropdown-content">
-                    <div class="form-box" id="login-box">
-                        <h2>Login</h2>
-                        <form action="signup_login.php" method="post">
-                            <?php if(isset($_SESSION['login_error'])): ?>
-                                <p class="error"><?php echo $_SESSION['login_error']; unset($_SESSION['login_error']); ?></p>
-                            <?php endif; ?>
-                            <input type="email" name="email" placeholder="Email" required>
-                            <input type="password" name="password" placeholder="Password" required>
-                            <button type="submit" name="login" class="auth-button">Login</button>
-                        </form>
-                        <p>Don't have an account? <a href="#" onclick="showSignup(); return false;">Sign Up</a></p>
-                    </div>
+                    <?php if(isset($_SESSION['user_id'])): ?>
+                        <div class="welcome-message">
+                            <p>Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?>!</p>
+                            <p>You are logged in</p>
+                            <a href="logout.php" class="logout-link">Logout</a>
+                        </div>
+                    <?php else: ?>
+                        <div class="form-box" id="login-box">
+                            <h2>Login</h2>
+                            <form action="signup_login.php" method="post">
+                                <?php if(isset($_SESSION['login_error'])): ?>
+                                    <p class="error"><?php echo $_SESSION['login_error']; unset($_SESSION['login_error']); ?></p>
+                                <?php endif; ?>
+                                <input type="email" name="email" placeholder="Email" required>
+                                <input type="password" name="password" placeholder="Password" required>
+                                <button type="submit" name="login" class="auth-button">Login</button>
+                            </form>
+                            <p>Don't have an account? <a href="#" onclick="showSignup(); return false;">Sign Up</a></p>
+                        </div>
 
-                    <div class="form-box hidden" id="signup-box">
-                        <h2>Sign Up</h2>
-                        <form action="signup_login.php" method="post">
-                            <?php if(isset($_SESSION['signup_error'])): ?>
-                                <p class="error"><?php echo $_SESSION['signup_error']; unset($_SESSION['signup_error']); ?></p>
-                            <?php endif; ?>
-                            <?php if(isset($_SESSION['signup_success'])): ?>
-                                <p class="success"><?php echo $_SESSION['signup_success']; unset($_SESSION['signup_success']); ?></p>
-                            <?php endif; ?>
-                            <input type="text" name="username" placeholder="Full Name" required>
-                            <input type="email" name="email" placeholder="Email" required>
-                            <input type="password" name="password" placeholder="Password" required>
-                            <input type="date" name="dob" placeholder="Date of Birth" required>
-                            <button type="submit" name="signup" class="auth-button">Sign Up</button>
-                        </form>
-                        <p>Already have an account? <a href="#" onclick="showLogin(); return false;">Login</a></p>
-                    </div>
+                        <div class="form-box hidden" id="signup-box">
+                            <h2>Sign Up</h2>
+                            <form action="signup_login.php" method="post">
+                                <?php if(isset($_SESSION['signup_error'])): ?>
+                                    <p class="error"><?php echo $_SESSION['signup_error']; unset($_SESSION['signup_error']); ?></p>
+                                <?php endif; ?>
+                                <?php if(isset($_SESSION['signup_success'])): ?>
+                                    <p class="success"><?php echo $_SESSION['signup_success']; unset($_SESSION['signup_success']); ?></p>
+                                <?php endif; ?>
+                                <input type="text" name="username" placeholder="Full Name" required>
+                                <input type="email" name="email" placeholder="Email" required>
+                                <input type="password" name="password" placeholder="Password" required>
+                                <input type="date" name="dob" placeholder="Date of Birth" required>
+                                <button type="submit" name="signup" class="auth-button">Sign Up</button>
+                            </form>
+                            <p>Already have an account? <a href="#" onclick="showLogin(); return false;">Login</a></p>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
             
@@ -195,7 +204,7 @@ session_start();
             } else {
                 // Default query (4 featured products)
                 $sql = "SELECT * FROM Products LIMIT 4";
-                $result = $conn->query($sql);
+                $result = $connection->query($sql);
             }
 
             if ($result->num_rows > 0) {
@@ -204,7 +213,10 @@ session_start();
                     echo "<img src='IMG/" . htmlspecialchars($row['image']) . "' alt='" . htmlspecialchars($row['name']) . "'>";
                     echo "<h3>" . htmlspecialchars($row['name']) . "</h3>";
                     echo "<p class='product-price'>€" . htmlspecialchars($row['price']) . "</p>";
-                    echo "<button class='add-to-bag' data-product-id='" . htmlspecialchars($row['product_id']) . "'>Add to bag</button>";
+                    echo "<form action='cart.php' method='get' style='display:inline;'>";
+                    echo "<input type='hidden' name='add_to_cart' value='" . htmlspecialchars($row['product_id']) . "'>";
+                    echo "<button type='submit' class='add-to-bag'>Add to bag</button>";
+                    echo "</form>";
                     echo "</div>";
                 }
             } else {

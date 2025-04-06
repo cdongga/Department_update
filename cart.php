@@ -9,7 +9,7 @@ if (isset($_GET['add_to_cart'])) {
     if ($product_id !== false && $product_id > 0) {
         // Get product details from database
         $sql = "SELECT name, price, image FROM products WHERE product_id = ?";
-        $stmt = $conn->prepare($sql);
+        $stmt = $connection->prepare($sql);
         $stmt->bind_param("i", $product_id);
         $stmt->execute();
         $result = $stmt->get_result();

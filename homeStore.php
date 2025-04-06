@@ -52,59 +52,62 @@ include 'db_connect.php';
                 <img src="IMG/eu-flag.png" alt="EU Flag">
             </div>
             
-            <!-- User Dropdown (keeping this as requested) -->
+            <!-- Updated User Dropdown -->
             <div class="user-dropdown">
                 <i class="fas fa-user"></i>
                 <div class="user-dropdown-content">
-                    <div class="form-box" id="login-box">
-                        <h2>Login</h2>
-                        <form action="signup_login.php" method="post">
-                            <?php if(isset($_SESSION['login_error'])): ?>
-                                <p class="error"><?php echo $_SESSION['login_error']; unset($_SESSION['login_error']); ?></p>
-                            <?php endif; ?>
-                            <input type="email" name="email" placeholder="Email" required>
-                            <input type="password" name="password" placeholder="Password" required>
-                            <button type="submit" name="login" class="auth-button">Login</button>
-                        </form>
-                        <p>Don't have an account? <a href="#" onclick="showSignup(); return false;">Sign Up</a></p>
-                    </div>
+                    <?php if(isset($_SESSION['user_id'])): ?>
+                        <div class="welcome-message">
+                            <p>Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?>!</p>
+                            <p>You are logged in</p>
+                            <a href="logout.php" class="logout-link">Logout</a>
+                        </div>
+                    <?php else: ?>
+                        <div class="form-box" id="login-box">
+                            <h2>Login</h2>
+                            <form action="signup_login.php" method="post">
+                                <?php if(isset($_SESSION['login_error'])): ?>
+                                    <p class="error"><?php echo $_SESSION['login_error']; unset($_SESSION['login_error']); ?></p>
+                                <?php endif; ?>
+                                <input type="email" name="email" placeholder="Email" required>
+                                <input type="password" name="password" placeholder="Password" required>
+                                <button type="submit" name="login" class="auth-button">Login</button>
+                            </form>
+                            <p>Don't have an account? <a href="#" onclick="showSignup(); return false;">Sign Up</a></p>
+                        </div>
 
-                    <div class="form-box hidden" id="signup-box">
-                        <h2>Sign Up</h2>
-                        <form action="signup_login.php" method="post">
-                            <?php if(isset($_SESSION['signup_error'])): ?>
-                                <p class="error"><?php echo $_SESSION['signup_error']; unset($_SESSION['signup_error']); ?></p>
-                            <?php endif; ?>
-                            <?php if(isset($_SESSION['signup_success'])): ?>
-                                <p class="success"><?php echo $_SESSION['signup_success']; unset($_SESSION['signup_success']); ?></p>
-                            <?php endif; ?>
-                            <input type="text" name="username" placeholder="Full Name" required>
-                            <input type="email" name="email" placeholder="Email" required>
-                            <input type="password" name="password" placeholder="Password" required>
-                            <input type="date" name="dob" placeholder="Date of Birth" required>
-                            <button type="submit" name="signup" class="auth-button">Sign Up</button>
-                        </form>
-                        <p>Already have an account? <a href="#" onclick="showLogin(); return false;">Login</a></p>
-                    </div>
+                        <div class="form-box hidden" id="signup-box">
+                            <h2>Sign Up</h2>
+                            <form action="signup_login.php" method="post">
+                                <?php if(isset($_SESSION['signup_error'])): ?>
+                                    <p class="error"><?php echo $_SESSION['signup_error']; unset($_SESSION['signup_error']); ?></p>
+                                <?php endif; ?>
+                                <?php if(isset($_SESSION['signup_success'])): ?>
+                                    <p class="success"><?php echo $_SESSION['signup_success']; unset($_SESSION['signup_success']); ?></p>
+                                <?php endif; ?>
+                                <input type="text" name="username" placeholder="Full Name" required>
+                                <input type="email" name="email" placeholder="Email" required>
+                                <input type="password" name="password" placeholder="Password" required>
+                                <input type="date" name="dob" placeholder="Date of Birth" required>
+                                <button type="submit" name="signup" class="auth-button">Sign Up</button>
+                            </form>
+                            <p>Already have an account? <a href="#" onclick="showLogin(); return false;">Login</a></p>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
             
             <i class="fas fa-heart"></i>
             
-            <!-- Cart Dropdown -->
-            <div class="cart-dropdown">
-                <div class="cart-icon">
+            <div class="cart-icon-container">
+                <a href="cart.php" class="cart-icon-link">
                     <i class="fas fa-shopping-cart"></i>
-                    <span class="cart-count"><?php echo isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0; ?></span>
-                </div>
-                <div class="cart-content">
-                    <p class="empty-cart">Your cart is empty.</p>
-                    <ul id="cart-items"></ul>
-                    <a href="checkout.php" class="checkout-btn">Checkout</a>
-                </div>
+                    <span class="cart-count">
+                        <?php echo isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0; ?>
+                    </span>
+                </a>
             </div>
             
-            <!-- Admin Icon -->
             <div class="admin-dropdown">
                 <i class="fas fa-user-shield admin-icon" title="Admin Access"></i>
                 <div class="admin-dropdown-content">
@@ -141,7 +144,7 @@ include 'db_connect.php';
             echo "<h2 class='search-results-title'>Search Results for '" . htmlspecialchars($searchTerm) . "'</h2>";
         } else {
             $sql = "SELECT * FROM products WHERE category_id = 4";
-            $result = $conn->query($sql);
+            $result = $connection->query($sql);
         }
 
         if ($result->num_rows > 0) {
@@ -203,7 +206,7 @@ include 'db_connect.php';
                               LEFT JOIN users u ON r.user_ID = u.user_ID 
                               WHERE r.product_id = ? 
                               ORDER BY r.review_date DESC";
-                $stmt = $conn->prepare($review_sql);
+                $stmt = $connection->prepare($review_sql);
                 $stmt->bind_param("i", $product_id);
                 $stmt->execute();
                 $reviews = $stmt->get_result();
@@ -227,39 +230,43 @@ include 'db_connect.php';
                 ?>
             </div>
 
-            <!-- Review Form (no login required) -->
+            <!-- Updated Review Form -->
             <div class="review-form">
                 <h3>Write a Review</h3>
-                <form action="submit_review.php" method="post">
-                    <input type="hidden" name="product_id" value="<?= htmlspecialchars($_GET['product_id']) ?>">
-                    
-                    <div class="form-group">
-                        <label for="reviewer_name">Your Name:</label>
-                        <input type="text" id="reviewer_name" name="reviewer_name" required>
+                <?php if(isset($_SESSION['user_id'])): ?>
+                    <form action="submit_review.php" method="post">
+                        <input type="hidden" name="product_id" value="<?= htmlspecialchars($_GET['product_id']) ?>">
+                        <input type="hidden" name="reviewer_name" value="<?= htmlspecialchars($_SESSION['username']) ?>">
+                        
+                        <div class="rating-input">
+                            <label>Rating:</label>
+                            <select name="rating" required>
+                                <option value="">Select rating</option>
+                                <option value="1">1 Star</option>
+                                <option value="2">2 Stars</option>
+                                <option value="3">3 Stars</option>
+                                <option value="4">4 Stars</option>
+                                <option value="5">5 Stars</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="review_text">Your Review:</label>
+                            <textarea id="review_text" name="review_text" rows="4" required></textarea>
+                        </div>
+                        
+                        <button type="submit" class="add-to-bag">Submit Review</button>
+                    </form>
+                <?php else: ?>
+                    <div class="login-required">
+                        <p>You must be logged in to write a review.</p>
+                        <a href="#" onclick="document.querySelector('.user-dropdown i.fa-user').click(); return false;" class="login-link">Click here to login</a>
                     </div>
-                    
-                    <div class="rating-input">
-                        <label>Rating:</label>
-                        <select name="rating" required>
-                            <option value="">Select rating</option>
-                            <option value="1">1 Star</option>
-                            <option value="2">2 Stars</option>
-                            <option value="3">3 Stars</option>
-                            <option value="4">4 Stars</option>
-                            <option value="5">5 Stars</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="review_text">Your Review:</label>
-                        <textarea id="review_text" name="review_text" rows="4" required></textarea>
-                    </div>
-                    
-                    <button type="submit" class="add-to-bag">Submit Review</button>
-                </form>
+                <?php endif; ?>
             </div>
         <?php endif; ?>
     </div>
+    
     
     <!-- FOOTER -->
     <footer>

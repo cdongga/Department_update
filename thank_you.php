@@ -11,7 +11,7 @@ $order_id = $_GET['order_id'];
 
 // Get order details
 $sql = "SELECT * FROM orders WHERE order_id = ?";
-$stmt = $conn->prepare($sql);
+$stmt = $connection->prepare($sql);
 $stmt->bind_param("i", $order_id);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -22,7 +22,7 @@ $sql = "SELECT oi.*, p.name, p.image
         FROM order_items oi
         JOIN products p ON oi.product_id = p.product_id
         WHERE oi.order_id = ?";
-$stmt = $conn->prepare($sql);
+$stmt = $connection->prepare($sql);
 $stmt->bind_param("i", $order_id);
 $stmt->execute();
 $items = $stmt->get_result();
