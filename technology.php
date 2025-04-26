@@ -6,16 +6,13 @@
     <title>Technology Products - Shopaholics</title>
     <link rel="stylesheet" href="CSS/styles.css">
     <link rel="stylesheet" href="CSS/technology.css">
-    <link rel="stylesheet" href="CSS/cart.css">
-    <link rel="stylesheet" href="CSS/reviews.css">
+    <link rel="stylesheet" href="CSS/index.css">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
 </head>
-<?php
-session_start();
-include 'db_connect.php';
-?>
-
 <body>
+    
+    
     <!-- HEADER & NAVIGATION -->
     <header>
         <h3 class="promo"> USE CODE [NEW2025] FOR EXTRA UP TO 20% SKINCARE PRODUCTS </h3>
@@ -28,126 +25,144 @@ include 'db_connect.php';
         </div>
         
         <ul class="nav-menu">
-            <?php
-            $menu_items = [
-                "Home Page" => "index.php",
-                "Home" => "homeStore.php",
-                "Technology" => "technology.php",
-                "Skincare" => "skincare.php",
-                "Makeup" => "makeup.php"
-            ];
-            foreach ($menu_items as $name => $link) {
-                echo "<li><a href='" . htmlspecialchars($link) . "'>" . htmlspecialchars($name) . "</a></li>";
-            }
-            ?>
+            <li><a href="index.php">Home Page</a></li>
+            <li class="dropdown">
+                <a href="homeStore.php">Home</a>
+                <ul class="dropdown-menu">
+                    <li><a href="HOMEPAGES/kitchen.php">Kitchen</a></li>
+                    <li><a href="HOMEPAGES/couches.php">Couches</a></li>
+                    <li><a href="HOMEPAGES/bedding.php">Bedding</a></li>
+                    <li><a href="HOMEPAGES/decor.php">Decor</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="technology.php">Technology</a>
+                <ul class="dropdown-menu">
+                    <li><a href="TECHNOLOGYPAGES/Phones.php">Phones</a></li>
+                    <li><a href="TECHNOLOGYPAGES/Laptops.php">Laptops</a></li>
+                    <li><a href="TECHNOLOGYPAGES/Smartwatches.php">Smart Watches</a></li>
+                    <li><a href="TECHNOLOGYPAGES/Sound.php">Sound</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="skincare.php">Skincare</a>
+                <ul class="dropdown-menu">
+                    <li><a href="SKINCAREPAGES/Moisturisers.php">Moisturisers</a></li>
+                    <li><a href="SKINCAREPAGES/serums.php">Serums</a></li>
+                    <li><a href="SKINCAREPAGES/facemasks.php">Face Masks</a></li>
+                    <li><a href="SKINCAREPAGES/facialwash.php">Facial Wash</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="makeup.php">Makeup</a>
+                <ul class="dropdown-menu">
+                    <li><a href="MAKEUPPAGES/Lipsticks.php">Lipsticks</a></li>
+                    <li><a href="MAKEUPPAGES/lipglosses.php">Lipglosses</a></li>
+                    <li><a href="MAKEUPPAGES/Foundation.php">Foundation</a></li>
+                    <li><a href="MAKEUPPAGES/Eyeshadow.php">Eyeshadow</a></li>
+                </ul>
+            </li>
         </ul>
 
-        <div class="nav-right">
-            <form action="search.php" method="get" class="search-bar">
-                <input type="text" name="search" placeholder="Search products..." value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>" required>
-                <button type="submit"><i class="fas fa-search"></i></button>
-            </form>
-            
-            <div class="header-icons">
-                <div class="country-selector">
-                    <img src="IMG/eu-flag.png" alt="EU Flag" width="30" height="20">
-                </div>
-                
-                <div class="user-dropdown">
-                    <i class="fas fa-user"></i>
-                    <div class="user-dropdown-content">
-                        <?php if(isset($_SESSION['user_id'])): ?>
-                            <div class="welcome-message">
-                                <p>Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?>!</p>
-                                <p>You are logged in</p>
-                                <a href="logout.php" class="logout-link">Logout</a>
-                            </div>
-                        <?php else: ?>
-                            <div class="form-box" id="login-box">
-                                <h2>Login</h2>
-                                <form action="signup_login.php" method="post">
-                                    <?php if(isset($_SESSION['login_error'])): ?>
-                                        <p class="error"><?php echo $_SESSION['login_error']; unset($_SESSION['login_error']); ?></p>
-                                    <?php endif; ?>
-                                    <input type="email" name="email" placeholder="Email" required>
-                                    <input type="password" name="password" placeholder="Password" required>
-                                    <button type="submit" name="login" class="auth-button">Login</button>
-                                </form>
-                                <p>Don't have an account? <a href="#" onclick="showSignup(); return false;">Sign Up</a></p>
-                            </div>
+        <form action="search.php" method="get" class="search-bar">
+            <input type="text" name="search" placeholder="Search" value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>" required>
+            <button type="submit"><i class="fas fa-search"></i></button>
+        </form>
 
-                            <div class="form-box hidden" id="signup-box">
-                                <h2>Sign Up</h2>
-                                <form action="signup_login.php" method="post">
-                                    <?php if(isset($_SESSION['signup_error'])): ?>
-                                        <p class="error"><?php echo $_SESSION['signup_error']; unset($_SESSION['signup_error']); ?></p>
-                                    <?php endif; ?>
-                                    <?php if(isset($_SESSION['signup_success'])): ?>
-                                        <p class="success"><?php echo $_SESSION['signup_success']; unset($_SESSION['signup_success']); ?></p>
-                                    <?php endif; ?>
-                                    <input type="text" name="username" placeholder="Full Name" required>
-                                    <input type="email" name="email" placeholder="Email" required>
-                                    <input type="password" name="password" placeholder="Password" required>
-                                    <input type="date" name="dob" placeholder="Date of Birth" required>
-                                    <button type="submit" name="signup" class="auth-button">Sign Up</button>
-                                </form>
-                                <p>Already have an account? <a href="#" onclick="showLogin(); return false;">Login</a></p>
-                            </div>
-                        <?php endif; ?>
+        <div class="header-icons">
+            <div class="country-selector">
+                <img src="IMG/eu-flag.png" alt="EU Flag">
+            </div>
+            
+            <div class="user-dropdown">
+                <i class="fas fa-user"></i>
+                <div class="user-dropdown-content">
+                    <div class="form-box" id="login-box">
+                        <h2>Login</h2>
+                        <form action="signup_login.php" method="post">
+                            <?php if(isset($_SESSION['login_error'])): ?>
+                                <p class="error"><?php echo $_SESSION['login_error']; unset($_SESSION['login_error']); ?></p>
+                            <?php endif; ?>
+                            <input type="email" name="email" placeholder="Email" required>
+                            <input type="password" name="password" placeholder="Password" required>
+                            <button type="submit" name="login" class="auth-button">Login</button>
+                        </form>
+                        <p>Don't have an account? <a href="#" onclick="showSignup(); return false;">Sign Up</a></p>
+                    </div>
+
+                    <div class="form-box hidden" id="signup-box">
+                        <h2>Sign Up</h2>
+                        <form action="signup_login.php" method="post">
+                            <?php if(isset($_SESSION['signup_error'])): ?>
+                                <p class="error"><?php echo $_SESSION['signup_error']; unset($_SESSION['signup_error']); ?></p>
+                            <?php endif; ?>
+                            <?php if(isset($_SESSION['signup_success'])): ?>
+                                <p class="success"><?php echo $_SESSION['signup_success']; unset($_SESSION['signup_success']); ?></p>
+                            <?php endif; ?>
+                            <input type="text" name="username" placeholder="Full Name" required>
+                            <input type="email" name="email" placeholder="Email" required>
+                            <input type="password" name="password" placeholder="Password" required>
+                            <input type="date" name="dob" placeholder="Date of Birth" required>
+                            <button type="submit" name="signup" class="auth-button">Sign Up</button>
+                        </form>
+                        <p>Already have an account? <a href="#" onclick="showLogin(); return false;">Login</a></p>
                     </div>
                 </div>
-                
-                <a href="wishlist.php" class="wishlist-icon"><i class="fas fa-heart"></i></a>
-                
-                <div class="cart-icon-container">
-                    <a href="cart.php" class="cart-icon-link">
-                        <i class="fas fa-shopping-cart"></i>
-                        <span class="cart-count">
-                            <?php echo isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0; ?>
-                        </span>
-                    </a>
-                </div>
-                
-                <div class="admin-dropdown">
-                    <i class="fas fa-user-shield admin-icon" title="Admin Access"></i>
-                    <div class="admin-dropdown-content">
-                        <?php if(isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in']): ?>
-                            <p>Logged in as Admin</p>
-                            <a href="CRUD/admin.php" class="admin-link">Dashboard</a><br>
-                            <a href="CRUD/admin.php?logout" class="admin-link">Logout</a>
-                        <?php else: ?>
-                            <p>Admin Access</p>
-                            <a href="CRUD/login.php" class="admin-link">Login</a>
-                        <?php endif; ?>
-                    </div>
+            </div>
+            
+            <a href="wishlist.php" class="wishlist-icon"><i class="fas fa-heart"></i></a>
+            
+            <div class="cart-icon-container">
+                <a href="cart.php" class="cart-icon-link">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count">
+                        <?php echo isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0; ?>
+                    </span>
+                </a>
+            </div>
+            
+            <div class="admin-dropdown">
+                <i class="fas fa-user-shield admin-icon" title="Admin Access"></i>
+                <div class="admin-dropdown-content">
+                    <?php if(isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in']): ?>
+                        <p>Logged in as Admin</p>
+                        <a href="CRUD/admin.php" class="admin-link">Dashboard</a><br>
+                        <a href="CRUD/admin.php?logout" class="admin-link">Logout</a>
+                    <?php else: ?>
+                        <p>Admin Access</p>
+                        <a href="CRUD/login.php" class="admin-link">Login</a>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
     </nav>
-
     <div class="banner">
         <img src="IMG/design.png" alt="Tech Banner">
     </div>
 
     <div class="product-container">
         <?php
+        include 'db_connect.php';
+        
         // Check if search was performed
         if (isset($_GET['search'])) {
             $searchTerm = $_GET['search'];
             $searchParam = "%$searchTerm%";
             
+            // Search query (only technology products)
             $sql = "SELECT * FROM products 
-                    WHERE (name LIKE ? OR description LIKE ?)
+                    WHERE (name LIKE ? OR description LIKE ?) 
                     AND category_id = 1"; // Only technology products
-            $stmt = $connection->prepare($sql);
+            $stmt = $conn->prepare($sql);
             $stmt->bind_param("ss", $searchParam, $searchParam);
             $stmt->execute();
             $result = $stmt->get_result();
             
             echo "<h2 class='search-results-title'>Search Results for '" . htmlspecialchars($searchTerm) . "'</h2>";
         } else {
-            $sql = "SELECT * FROM products WHERE category_id = 1"; // Technology category
-            $result = $connection->query($sql);
+            // Default query (all technology products)
+            $sql = "SELECT * FROM products WHERE category_id = 1";
+            $result = $conn->query($sql);
         }
 
         if ($result->num_rows > 0) {
@@ -158,102 +173,21 @@ include 'db_connect.php';
                 echo "<i class='fa-regular fa-heart wishlist-icon'></i>";
                 echo "</div>";
                 echo "<div class='product-details'>";
-                echo "<h3>" . htmlspecialchars($row['name']) . "</h3>";
+                echo "<p class='product-brand'>TECH</p>";
+                echo "<h3 class='product-title'>" . htmlspecialchars($row['name']) . "</h3>";
                 echo "<p class='product-price'>€" . htmlspecialchars($row['price']) . "</p>";
-                echo "<form action='cart.php' method='get' style='display:inline;'>";
-                echo "<input type='hidden' name='add_to_cart' value='" . htmlspecialchars($row['product_id']) . "'>";
-                echo "<button type='submit' class='add-to-bag'>ADD TO BAG</button>";
-                echo "</form>";
-                echo "<a href='technology.php?product_id=" . htmlspecialchars($row['product_id']) . "#reviews' class='view-reviews'>View Reviews</a>";
+                echo "<button class='add-to-bag' data-product-id='" . htmlspecialchars($row['product_id']) . "'>ADD TO BAG</button>";
                 echo "</div>";
                 echo "</div>";
             }
         } else {
-            echo "<p>No products found.</p>";
+            if (isset($_GET['search'])) {
+                echo "<p class='no-results'>No products found matching your search.</p>";
+            } else {
+                echo "<p>No products found in this category.</p>";
+            }
         }
         ?>
-    </div>
-
-    <!-- REVIEW SECTION -->
-    <div class="review-section" id="reviews">
-        <?php if(isset($_GET['product_id'])): ?>
-            <h2>Product Reviews</h2>
-            
-            <?php if(isset($_SESSION['review_error'])): ?>
-                <div class="error-message"><?php echo $_SESSION['review_error']; unset($_SESSION['review_error']); ?></div>
-            <?php endif; ?>
-            
-            <?php if(isset($_SESSION['review_success'])): ?>
-                <div class="success-message"><?php echo $_SESSION['review_success']; unset($_SESSION['review_success']); ?></div>
-            <?php endif; ?>
-            
-            <div class="reviews-container">
-                <?php
-                $product_id = intval($_GET['product_id']);
-                $review_sql = "SELECT r.*, COALESCE(u.username, r.reviewer_name) as display_name 
-                              FROM reviews r 
-                              LEFT JOIN users u ON r.user_ID = u.user_ID 
-                              WHERE r.product_id = ? 
-                              ORDER BY r.review_date DESC";
-                $stmt = $connection->prepare($review_sql);
-                $stmt->bind_param("i", $product_id);
-                $stmt->execute();
-                $reviews = $stmt->get_result();
-
-                if ($reviews->num_rows > 0) {
-                    while ($review = $reviews->fetch_assoc()) {
-                        echo '<div class="review">';
-                        echo '<h4>' . htmlspecialchars($review['display_name']) . '</h4>';
-                        echo '<div class="rating-stars">';
-                        for ($i = 1; $i <= 5; $i++) {
-                            echo $i <= $review['rating'] ? '★' : '☆';
-                        }
-                        echo '</div>';
-                        echo '<p>' . nl2br(htmlspecialchars($review['review_text'])) . '</p>';
-                        echo '<small>' . date('M j, Y', strtotime($review['review_date'])) . '</small>';
-                        echo '</div>';
-                    }
-                } else {
-                    echo '<p>No reviews yet. Be the first to review!</p>';
-                }
-                ?>
-            </div>
-
-            <!-- Review Form -->
-            <div class="review-form">
-                <h3>Write a Review</h3>
-                <?php if(isset($_SESSION['user_id'])): ?>
-                    <form action="submit_review.php" method="post">
-                        <input type="hidden" name="product_id" value="<?= htmlspecialchars($_GET['product_id']) ?>">
-                        <input type="hidden" name="reviewer_name" value="<?= htmlspecialchars($_SESSION['username']) ?>">
-                        
-                        <div class="rating-input">
-                            <label>Rating:</label>
-                            <select name="rating" required>
-                                <option value="">Select rating</option>
-                                <option value="1">1 Star</option>
-                                <option value="2">2 Stars</option>
-                                <option value="3">3 Stars</option>
-                                <option value="4">4 Stars</option>
-                                <option value="5">5 Stars</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="review_text">Your Review:</label>
-                            <textarea id="review_text" name="review_text" rows="4" required></textarea>
-                        </div>
-                        
-                        <button type="submit" class="add-to-bag">Submit Review</button>
-                    </form>
-                <?php else: ?>
-                    <div class="login-required">
-                        <p>You must be logged in to write a review.</p>
-                        <a href="#" onclick="document.querySelector('.user-dropdown i.fa-user').click(); return false;" class="login-link">Click here to login</a>
-                    </div>
-                <?php endif; ?>
-            </div>
-        <?php endif; ?>
     </div>
     
     <!-- FOOTER -->
@@ -291,6 +225,5 @@ include 'db_connect.php';
         <p class="footer-bottom">&copy; 2025 Shopaholics. All rights reserved.</p>
     </footer>
     <script src="JS/cart.js"></script>
-    <script src="JS/auth.js"></script>
 </body>
 </html>

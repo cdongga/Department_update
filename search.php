@@ -6,15 +6,8 @@
     <title>Search Results - Shopaholics</title>
     <link rel="stylesheet" href="CSS/styles.css">
     <link rel="stylesheet" href="CSS/search_results.css">
-    <link rel="stylesheet" href="CSS/cart.css">
-    <link rel="stylesheet" href="CSS/reviews.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
 </head>
-<?php
-session_start();
-include 'db_connect.php';
-?>
-
 <body>
     <!-- HEADER & NAVIGATION -->
     <header>
@@ -43,82 +36,28 @@ include 'db_connect.php';
         </ul>
 
         <div class="nav-right">
-            <form action="search.php" method="get" class="search-bar">
-                <input type="text" name="search" placeholder="Search products..." value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>" required>
+            <form action="search_results.php" method="get" class="search-bar">
+                <input type="text" name="search" placeholder="Search" value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>" required>
                 <button type="submit"><i class="fas fa-search"></i></button>
             </form>
-            
+
             <div class="header-icons">
                 <div class="country-selector">
-                    <img src="IMG/eu-flag.png" alt="EU Flag" width="30" height="20">
+                    <img src="IMG/eu-flag.png" alt="EU Flag">
                 </div>
-                
-                <div class="user-dropdown">
+                <a href="signup_login.php">
                     <i class="fas fa-user"></i>
-                    <div class="user-dropdown-content">
-                        <?php if(isset($_SESSION['user_id'])): ?>
-                            <div class="welcome-message">
-                                <p>Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?>!</p>
-                                <p>You are logged in</p>
-                                <a href="logout.php" class="logout-link">Logout</a>
-                            </div>
-                        <?php else: ?>
-                            <div class="form-box" id="login-box">
-                                <h2>Login</h2>
-                                <form action="signup_login.php" method="post">
-                                    <?php if(isset($_SESSION['login_error'])): ?>
-                                        <p class="error"><?php echo $_SESSION['login_error']; unset($_SESSION['login_error']); ?></p>
-                                    <?php endif; ?>
-                                    <input type="email" name="email" placeholder="Email" required>
-                                    <input type="password" name="password" placeholder="Password" required>
-                                    <button type="submit" name="login" class="auth-button">Login</button>
-                                </form>
-                                <p>Don't have an account? <a href="#" onclick="showSignup(); return false;">Sign Up</a></p>
-                            </div>
-
-                            <div class="form-box hidden" id="signup-box">
-                                <h2>Sign Up</h2>
-                                <form action="signup_login.php" method="post">
-                                    <?php if(isset($_SESSION['signup_error'])): ?>
-                                        <p class="error"><?php echo $_SESSION['signup_error']; unset($_SESSION['signup_error']); ?></p>
-                                    <?php endif; ?>
-                                    <?php if(isset($_SESSION['signup_success'])): ?>
-                                        <p class="success"><?php echo $_SESSION['signup_success']; unset($_SESSION['signup_success']); ?></p>
-                                    <?php endif; ?>
-                                    <input type="text" name="username" placeholder="Full Name" required>
-                                    <input type="email" name="email" placeholder="Email" required>
-                                    <input type="password" name="password" placeholder="Password" required>
-                                    <input type="date" name="dob" placeholder="Date of Birth" required>
-                                    <button type="submit" name="signup" class="auth-button">Sign Up</button>
-                                </form>
-                                <p>Already have an account? <a href="#" onclick="showLogin(); return false;">Login</a></p>
-                            </div>
-                        <?php endif; ?>
-                    </div>
-                </div>
-                
-                <a href="wishlist.php" class="wishlist-icon"><i class="fas fa-heart"></i></a>
-                
-                <div class="cart-icon-container">
-                    <a href="cart.php" class="cart-icon-link">
+                </a>
+                <i class="fas fa-heart"></i>
+                <div class="cart-dropdown">
+                    <div class="cart-icon">
                         <i class="fas fa-shopping-cart"></i>
-                        <span class="cart-count">
-                            <?php echo isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0; ?>
-                        </span>
-                    </a>
-                </div>
-                
-                <div class="admin-dropdown">
-                    <i class="fas fa-user-shield admin-icon" title="Admin Access"></i>
-                    <div class="admin-dropdown-content">
-                        <?php if(isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in']): ?>
-                            <p>Logged in as Admin</p>
-                            <a href="CRUD/admin.php" class="admin-link">Dashboard</a><br>
-                            <a href="CRUD/admin.php?logout" class="admin-link">Logout</a>
-                        <?php else: ?>
-                            <p>Admin Access</p>
-                            <a href="CRUD/login.php" class="admin-link">Login</a>
-                        <?php endif; ?>
+                        <span class="cart-count">0</span>
+                    </div>
+                    <div class="cart-content">
+                        <p class="empty-cart">Your cart is empty.</p>
+                        <ul id="cart-items"></ul>
+                        <a href="checkout.php" class="checkout-btn">Checkout</a>
                     </div>
                 </div>
             </div>
@@ -128,6 +67,8 @@ include 'db_connect.php';
     <!-- SEARCH RESULTS SECTION -->
     <div class="search-results-container">
         <?php
+        include 'db_connect.php';
+        
         if (isset($_GET['search'])) {
             $searchTerm = $_GET['search'];
             $searchParam = "%$searchTerm%";
@@ -137,7 +78,7 @@ include 'db_connect.php';
             $sql = "SELECT * FROM products 
                     WHERE name LIKE ? OR description LIKE ?
                     ORDER BY category_id, name";
-            $stmt = $connection->prepare($sql);
+            $stmt = $conn->prepare($sql);
             $stmt->bind_param("ss", $searchParam, $searchParam);
             $stmt->execute();
             $result = $stmt->get_result();
@@ -164,7 +105,6 @@ include 'db_connect.php';
                     echo "<h3 class='product-title'>" . htmlspecialchars($row['name']) . "</h3>";
                     echo "<p class='product-price'>€" . htmlspecialchars($row['price']) . "</p>";
                     echo "<button class='add-to-bag' data-product-id='" . htmlspecialchars($row['product_id']) . "'>ADD TO BAG</button>";
-                    echo "<a href='homeStore.php?product_id=" . htmlspecialchars($row['product_id']) . "#reviews' class='view-reviews'>View Reviews</a>";
                     echo "</div>";
                     echo "</div>";
                 }
@@ -215,6 +155,5 @@ include 'db_connect.php';
         <p class="footer-bottom">&copy; 2025 Shopaholics. All rights reserved.</p>
     </footer>
     <script src="JS/cart.js"></script>
-    <script src="JS/auth.js"></script>
 </body>
 </html>

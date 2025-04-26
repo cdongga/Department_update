@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home Products - Shopaholics</title>
     <link rel="stylesheet" href="CSS/styles.css">
+    <link rel="stylesheet" href="CSS/index.css">
     <link rel="stylesheet" href="CSS/HomeStore.css">
     <link rel="stylesheet" href="CSS/cart.css">
     <link rel="stylesheet" href="CSS/reviews.css">
@@ -15,9 +16,8 @@ session_start();
 include 'db_connect.php';
 ?>
 
-<body>
-    <!-- HEADER & NAVIGATION -->
-    <header>
+<!-- HEADER & NAVIGATION -->
+<header>
         <h3 class="promo"> USE CODE [NEW2025] FOR EXTRA UP TO 20% SKINCARE PRODUCTS </h3>
     </header>
     
@@ -28,18 +28,43 @@ include 'db_connect.php';
         </div>
         
         <ul class="nav-menu">
-            <?php
-            $menu_items = [
-                "Home Page" => "index.php",
-                "Home" => "homeStore.php",
-                "Technology" => "technology.php",
-                "Skincare" => "skincare.php",
-                "Makeup" => "makeup.php"
-            ];
-            foreach ($menu_items as $name => $link) {
-                echo "<li><a href='" . htmlspecialchars($link) . "'>" . htmlspecialchars($name) . "</a></li>";
-            }
-            ?>
+            <li><a href="index.php">Home Page</a></li>
+            <li class="dropdown">
+                <a href="homeStore.php">Home</a>
+                <ul class="dropdown-menu">
+                    <li><a href="HOMEPAGES/kitchen.php">Kitchen</a></li>
+                    <li><a href="HOMEPAGES/couches.php">Couches</a></li>
+                    <li><a href="HOMEPAGES/bedding.php">Bedding</a></li>
+                    <li><a href="HOMEPAGES/decor.php">Decor</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="technology.php">Technology</a>
+                <ul class="dropdown-menu">
+                    <li><a href="TECHNOLOGYPAGES/Phones.php">Phones</a></li>
+                    <li><a href="TECHNOLOGYPAGES/Laptops.php">Laptops</a></li>
+                    <li><a href="TECHNOLOGYPAGES/Smartwatches.php">Smart Watches</a></li>
+                    <li><a href="TECHNOLOGYPAGES/Sound.php">Sound</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="skincare.php">Skincare</a>
+                <ul class="dropdown-menu">
+                    <li><a href="SKINCAREPAGES/Moisturisers.php">Moisturisers</a></li>
+                    <li><a href="SKINCAREPAGES/serums.php">Serums</a></li>
+                    <li><a href="SKINCAREPAGES/facemasks.php">Face Masks</a></li>
+                    <li><a href="SKINCAREPAGES/facialwash.php">Facial Wash</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="makeup.php">Makeup</a>
+                <ul class="dropdown-menu">
+                    <li><a href="MAKEUPPAGES/Lipsticks.php">Lipsticks</a></li>
+                    <li><a href="MAKEUPPAGES/lipglosses.php">Lipglosses</a></li>
+                    <li><a href="MAKEUPPAGES/Foundation.php">Foundation</a></li>
+                    <li><a href="MAKEUPPAGES/Eyeshadow.php">Eyeshadow</a></li>
+                </ul>
+            </li>
         </ul>
 
         <form action="search.php" method="get" class="search-bar">
@@ -52,52 +77,43 @@ include 'db_connect.php';
                 <img src="IMG/eu-flag.png" alt="EU Flag">
             </div>
             
-            <!-- Updated User Dropdown -->
             <div class="user-dropdown">
                 <i class="fas fa-user"></i>
                 <div class="user-dropdown-content">
-                    <?php if(isset($_SESSION['user_id'])): ?>
-                        <div class="welcome-message">
-                            <p>Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?>!</p>
-                            <p>You are logged in</p>
-                            <a href="logout.php" class="logout-link">Logout</a>
-                        </div>
-                    <?php else: ?>
-                        <div class="form-box" id="login-box">
-                            <h2>Login</h2>
-                            <form action="signup_login.php" method="post">
-                                <?php if(isset($_SESSION['login_error'])): ?>
-                                    <p class="error"><?php echo $_SESSION['login_error']; unset($_SESSION['login_error']); ?></p>
-                                <?php endif; ?>
-                                <input type="email" name="email" placeholder="Email" required>
-                                <input type="password" name="password" placeholder="Password" required>
-                                <button type="submit" name="login" class="auth-button">Login</button>
-                            </form>
-                            <p>Don't have an account? <a href="#" onclick="showSignup(); return false;">Sign Up</a></p>
-                        </div>
+                    <div class="form-box" id="login-box">
+                        <h2>Login</h2>
+                        <form action="signup_login.php" method="post">
+                            <?php if(isset($_SESSION['login_error'])): ?>
+                                <p class="error"><?php echo $_SESSION['login_error']; unset($_SESSION['login_error']); ?></p>
+                            <?php endif; ?>
+                            <input type="email" name="email" placeholder="Email" required>
+                            <input type="password" name="password" placeholder="Password" required>
+                            <button type="submit" name="login" class="auth-button">Login</button>
+                        </form>
+                        <p>Don't have an account? <a href="#" onclick="showSignup(); return false;">Sign Up</a></p>
+                    </div>
 
-                        <div class="form-box hidden" id="signup-box">
-                            <h2>Sign Up</h2>
-                            <form action="signup_login.php" method="post">
-                                <?php if(isset($_SESSION['signup_error'])): ?>
-                                    <p class="error"><?php echo $_SESSION['signup_error']; unset($_SESSION['signup_error']); ?></p>
-                                <?php endif; ?>
-                                <?php if(isset($_SESSION['signup_success'])): ?>
-                                    <p class="success"><?php echo $_SESSION['signup_success']; unset($_SESSION['signup_success']); ?></p>
-                                <?php endif; ?>
-                                <input type="text" name="username" placeholder="Full Name" required>
-                                <input type="email" name="email" placeholder="Email" required>
-                                <input type="password" name="password" placeholder="Password" required>
-                                <input type="date" name="dob" placeholder="Date of Birth" required>
-                                <button type="submit" name="signup" class="auth-button">Sign Up</button>
-                            </form>
-                            <p>Already have an account? <a href="#" onclick="showLogin(); return false;">Login</a></p>
-                        </div>
-                    <?php endif; ?>
+                    <div class="form-box hidden" id="signup-box">
+                        <h2>Sign Up</h2>
+                        <form action="signup_login.php" method="post">
+                            <?php if(isset($_SESSION['signup_error'])): ?>
+                                <p class="error"><?php echo $_SESSION['signup_error']; unset($_SESSION['signup_error']); ?></p>
+                            <?php endif; ?>
+                            <?php if(isset($_SESSION['signup_success'])): ?>
+                                <p class="success"><?php echo $_SESSION['signup_success']; unset($_SESSION['signup_success']); ?></p>
+                            <?php endif; ?>
+                            <input type="text" name="username" placeholder="Full Name" required>
+                            <input type="email" name="email" placeholder="Email" required>
+                            <input type="password" name="password" placeholder="Password" required>
+                            <input type="date" name="dob" placeholder="Date of Birth" required>
+                            <button type="submit" name="signup" class="auth-button">Sign Up</button>
+                        </form>
+                        <p>Already have an account? <a href="#" onclick="showLogin(); return false;">Login</a></p>
+                    </div>
                 </div>
             </div>
             
-            <i class="fas fa-heart"></i>
+            <a href="wishlist.php" class="wishlist-icon"><i class="fas fa-heart"></i></a>
             
             <div class="cart-icon-container">
                 <a href="cart.php" class="cart-icon-link">
@@ -113,7 +129,7 @@ include 'db_connect.php';
                 <div class="admin-dropdown-content">
                     <?php if(isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in']): ?>
                         <p>Logged in as Admin</p>
-                        <a href="CRUD/admin.php" class="admin-link">Dashboard</a>
+                        <a href="CRUD/admin.php" class="admin-link">Dashboard</a><br>
                         <a href="CRUD/admin.php?logout" class="admin-link">Logout</a>
                     <?php else: ?>
                         <p>Admin Access</p>
@@ -144,7 +160,7 @@ include 'db_connect.php';
             echo "<h2 class='search-results-title'>Search Results for '" . htmlspecialchars($searchTerm) . "'</h2>";
         } else {
             $sql = "SELECT * FROM products WHERE category_id = 4";
-            $result = $connection->query($sql);
+            $result = $conn->query($sql);
         }
 
         if ($result->num_rows > 0) {
@@ -206,7 +222,7 @@ include 'db_connect.php';
                               LEFT JOIN users u ON r.user_ID = u.user_ID 
                               WHERE r.product_id = ? 
                               ORDER BY r.review_date DESC";
-                $stmt = $connection->prepare($review_sql);
+                $stmt = $conn->prepare($review_sql);
                 $stmt->bind_param("i", $product_id);
                 $stmt->execute();
                 $reviews = $stmt->get_result();
@@ -230,43 +246,39 @@ include 'db_connect.php';
                 ?>
             </div>
 
-            <!-- Updated Review Form -->
+            <!-- Review Form (no login required) -->
             <div class="review-form">
                 <h3>Write a Review</h3>
-                <?php if(isset($_SESSION['user_id'])): ?>
-                    <form action="submit_review.php" method="post">
-                        <input type="hidden" name="product_id" value="<?= htmlspecialchars($_GET['product_id']) ?>">
-                        <input type="hidden" name="reviewer_name" value="<?= htmlspecialchars($_SESSION['username']) ?>">
-                        
-                        <div class="rating-input">
-                            <label>Rating:</label>
-                            <select name="rating" required>
-                                <option value="">Select rating</option>
-                                <option value="1">1 Star</option>
-                                <option value="2">2 Stars</option>
-                                <option value="3">3 Stars</option>
-                                <option value="4">4 Stars</option>
-                                <option value="5">5 Stars</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="review_text">Your Review:</label>
-                            <textarea id="review_text" name="review_text" rows="4" required></textarea>
-                        </div>
-                        
-                        <button type="submit" class="add-to-bag">Submit Review</button>
-                    </form>
-                <?php else: ?>
-                    <div class="login-required">
-                        <p>You must be logged in to write a review.</p>
-                        <a href="#" onclick="document.querySelector('.user-dropdown i.fa-user').click(); return false;" class="login-link">Click here to login</a>
+                <form action="submit_review.php" method="post">
+                    <input type="hidden" name="product_id" value="<?= htmlspecialchars($_GET['product_id']) ?>">
+                    
+                    <div class="form-group">
+                        <label for="reviewer_name">Your Name:</label>
+                        <input type="text" id="reviewer_name" name="reviewer_name" required>
                     </div>
-                <?php endif; ?>
+                    
+                    <div class="rating-input">
+                        <label>Rating:</label>
+                        <select name="rating" required>
+                            <option value="">Select rating</option>
+                            <option value="1">1 Star</option>
+                            <option value="2">2 Stars</option>
+                            <option value="3">3 Stars</option>
+                            <option value="4">4 Stars</option>
+                            <option value="5">5 Stars</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="review_text">Your Review:</label>
+                        <textarea id="review_text" name="review_text" rows="4" required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="add-to-bag">Submit Review</button>
+                </form>
             </div>
         <?php endif; ?>
     </div>
-    
     
     <!-- FOOTER -->
     <footer>

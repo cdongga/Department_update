@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Insert order
             $sql = "INSERT INTO orders (customer_name, customer_email, shipping_address, shipping_city, shipping_zip, shipping_country, total_amount) 
                     VALUES (?, ?, ?, ?, ?, ?, ?)";
-            $stmt = $connection->prepare($sql);
+            $stmt = $conn->prepare($sql);
             $stmt->bind_param("ssssssd", 
                 $_POST['name'],
                 $_POST['email'],
@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $total
             );
             $stmt->execute();
-            $order_id = $connection->insert_id;
+            $order_id = $conn->insert_id;
             
             // Insert order items with validation
             foreach ($_SESSION['cart'] as $product_id => $item) {
@@ -62,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     
                     $sql = "INSERT INTO order_items (order_id, product_id, quantity, price) 
                             VALUES (?, ?, ?, ?)";
-                    $stmt = $connection->prepare($sql);
+                    $stmt = $conn->prepare($sql);
                     $stmt->bind_param("iiid", 
                         $order_id,
                         $product_id,

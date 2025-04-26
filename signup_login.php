@@ -7,7 +7,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["login"])) {
     $email = $_POST["email"] ?? '';
     $password = $_POST["password"] ?? '';
 
-    $stmt = $connection->prepare("SELECT * FROM users WHERE email = ?");
+    $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -46,7 +46,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["signup"])) {
         $hashed_password = password_hash($password, PASSWORD_BCRYPT);
 
         // Check if email already exists
-        $stmt = $connection->prepare("SELECT * FROM users WHERE email = ?");
+        $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
         $stmt->bind_param("s", $email);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -55,7 +55,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["signup"])) {
             $signup_error = "Email already registered!";
         } else {
             // Insert new user
-            $stmt = $connection->prepare("INSERT INTO users (username, email, password, dob) VALUES (?, ?, ?, ?)");
+            $stmt = $conn->prepare("INSERT INTO users (username, email, password, dob) VALUES (?, ?, ?, ?)");
             $stmt->bind_param("ssss", $username, $email, $hashed_password, $dob);
 
             if ($stmt->execute()) {

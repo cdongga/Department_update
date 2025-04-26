@@ -13,7 +13,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $sql = "INSERT INTO products (name, category_id, price, stock_quantity, description, image) 
             VALUES (?, ?, ?, ?, ?, ?)";
 
-    $stmt = $connection->prepare($sql);
+    $stmt = $conn->prepare($sql);
     $stmt->bind_param("sidiss", $name, $category_id, $price, $stock_quantity, $description, $image);
 
     if ($stmt->execute()) {

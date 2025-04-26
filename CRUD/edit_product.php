@@ -8,7 +8,7 @@ if (!isset($_GET["id"])) {
 
 $product_id = $_GET["id"];
 $sql = "SELECT * FROM products WHERE product_id=?";
-$stmt = $connection->prepare($sql);
+$stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $product_id);
 $stmt->execute();
 $result = $stmt->get_result();
