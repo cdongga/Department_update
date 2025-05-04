@@ -1,42 +1,44 @@
 <?php
-include 'db_connect.php';
-include 'Productclass.php';
+class Product {
+    private $productID;
+    private $name;
+    private $description;
+    private $price;
+    private $stock;
 
-$product = new Product($conn);
-$products = $product->getAllProducts();
+    public function getProductID() {
+        return $this->productID;
+    }
+    public function setProductID($productID) {
+        $this->productID = $productID;
+    }
+
+    public function getName() {
+        return $this->name;
+    }
+    public function setName($name) {
+        $this->name = $name;
+    }
+
+    public function getDescription() {
+        return $this->description;
+    }
+    public function setDescription($description) {
+        $this->description = $description;
+    }
+
+    public function getPrice() {
+        return $this->price;
+    }
+    public function setPrice($price) {
+        $this->price = $price;
+    }
+
+    public function getStock() {
+        return $this->stock;
+    }
+    public function setStock($stock) {
+        $this->stock = $stock;
+    }
+}
 ?>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Products</title>
-    <link rel="stylesheet" href="CSS/styles.css">
-</head>
-<body>
-    <header>
-        <h1>Shopaholics Products</h1>
-    </header>
-
-    <div class="product-container">
-        <?php if (!empty($products)): ?>
-            <?php foreach ($products as $row): ?>
-                <div class="product-card">
-                    <div class="product-image">
-                        <img src="IMG/<?= htmlspecialchars($row['image']) ?>" alt="<?= htmlspecialchars($row['name']) ?>">
-                    </div>
-                    <div class="product-details">
-                        <h3><?= htmlspecialchars($row['name']) ?></h3>
-                        <p>€<?= htmlspecialchars($row['price']) ?></p>
-                        <p><?= htmlspecialchars($row['description']) ?></p>
-                        <button class="add-to-cart">Add to Cart</button>
-                    </div>
-                </div>
-            <?php endforeach; ?>
-        <?php else: ?>
-            <p>No products available.</p>
-        <?php endif; ?>
-    </div>
-</body>
-</html>

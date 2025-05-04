@@ -1,22 +1,33 @@
-
 <?php
 session_start();
 require '../db_connect.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = $_POST["username"];
-    $password = $_POST["password"];
+    try {
+        $username = $_POST["username"];
+        $password = $_POST["password"];
 
-    
-    if ($username === "admin" && $password === "admin123") {
-        $_SESSION['admin_logged_in'] = true;
-        header("Location: admin.php");
-        exit();
-    } else {
-        $error = "Invalid username or password";
+        // Using prepared statement even for hardcoded credentials
+        $sql = "SELECT * FROM admins WHERE username = :username AND password = :password";
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindParam(':username', $username);
+        $stmt->bindParam(':password', $password);
+        $stmt->execute();
+        
+        if ($stmt->rowCount() > 0) {
+            $_SESSION['admin_logged_in'] = true;
+            header("Location: admin.php");
+            exit();
+        } else {
+            $error = "Invalid username or password";
+        }
+    } catch(PDOException $e) {
+        $error = "Database error: " . $e->getMessage();
     }
 }
 ?>
+
+
 
 <!DOCTYPE html>
 <html lang="en">

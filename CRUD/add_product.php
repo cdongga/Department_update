@@ -3,26 +3,34 @@ session_start();
 require '../db_connect.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $name = $_POST["name"];
-    $category_id = $_POST["category_id"];
-    $price = $_POST["price"];
-    $stock_quantity = $_POST["stock_quantity"];
-    $description = $_POST["description"];
-    $image = $_POST["image"]; 
+    try {
+        $name = $_POST["name"];
+        $category_id = $_POST["category_id"];
+        $price = $_POST["price"];
+        $stock_quantity = $_POST["stock_quantity"];
+        $description = $_POST["description"];
+        $image = $_POST["image"]; 
 
-    $sql = "INSERT INTO products (name, category_id, price, stock_quantity, description, image) 
-            VALUES (?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO products (name, category_id, price, stock_quantity, description, image) 
+                VALUES (:name, :category_id, :price, :stock_quantity, :description, :image)";
 
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sidiss", $name, $category_id, $price, $stock_quantity, $description, $image);
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':name', $name);
+        $stmt->bindParam(':category_id', $category_id, PDO::PARAM_INT);
+        $stmt->bindParam(':price', $price);
+        $stmt->bindParam(':stock_quantity', $stock_quantity, PDO::PARAM_INT);
+        $stmt->bindParam(':description', $description);
+        $stmt->bindParam(':image', $image);
 
-    if ($stmt->execute()) {
-        echo "Product added successfully!";
-    } else {
-        echo "Error: " . $stmt->error;
+        if ($stmt->execute()) {
+            echo "Product added successfully!";
+        }
+    } catch(PDOException $e) {
+        echo "Error: " . $e->getMessage();
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">

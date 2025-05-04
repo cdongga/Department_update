@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="CSS/styles.css">
     <link rel="stylesheet" href="CSS/index.css">
     <link rel="stylesheet" href="CSS/cart.css"> 
+    <link rel="stylesheet" href="CSS/signup_login.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
 </head>
 <?php
@@ -67,76 +68,71 @@ session_start();
         </ul>
         <div class="nav-right">
         <form action="search.php" method="get" class="search-bar">
-            <input type="text" name="search" placeholder="Search products..." value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>" required>
-            <button type="submit"><i class="fas fa-search"></i></button>
-        </form>
-        
-        <div class="header-icons">
-            <div class="country-selector">
-                <img src="IMG/eu-flag.png" alt="EU Flag" width="30" height="20">
-            </div>
-            
-            <div class="user-dropdown">
-                <i class="fas fa-user"></i>
-                <div class="user-dropdown-content">
-                    <div class="form-box" id="login-box">
-                        <h2>Login</h2>
-                        <form action="signup_login.php" method="post">
-                            <?php if(isset($_SESSION['login_error'])): ?>
-                                <p class="error"><?php echo $_SESSION['login_error']; unset($_SESSION['login_error']); ?></p>
-                            <?php endif; ?>
-                            <input type="email" name="email" placeholder="Email" required>
-                            <input type="password" name="password" placeholder="Password" required>
-                            <button type="submit" name="login" class="auth-button">Login</button>
-                        </form>
-                        <p>Don't have an account? <a href="#" onclick="showSignup(); return false;">Sign Up</a></p>
-                    </div>
+    <input type="text" name="search" placeholder="Search" value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>" required>
+    <button type="submit"><i class="fas fa-search"></i></button>
+</form>
 
-                    <div class="form-box hidden" id="signup-box">
-                        <h2>Sign Up</h2>
-                        <form action="signup_login.php" method="post">
-                            <?php if(isset($_SESSION['signup_error'])): ?>
-                                <p class="error"><?php echo $_SESSION['signup_error']; unset($_SESSION['signup_error']); ?></p>
-                            <?php endif; ?>
-                            <?php if(isset($_SESSION['signup_success'])): ?>
-                                <p class="success"><?php echo $_SESSION['signup_success']; unset($_SESSION['signup_success']); ?></p>
-                            <?php endif; ?>
-                            <input type="text" name="username" placeholder="Full Name" required>
-                            <input type="email" name="email" placeholder="Email" required>
-                            <input type="password" name="password" placeholder="Password" required>
-                            <input type="date" name="dob" placeholder="Date of Birth" required>
-                            <button type="submit" name="signup" class="auth-button">Sign Up</button>
-                        </form>
-                        <p>Already have an account? <a href="#" onclick="showLogin(); return false;">Login</a></p>
-                    </div>
+<div class="header-icons">
+    <div class="country-selector">
+        <img src="IMG/eu-flag.png" alt="EU Flag">
+    </div>
+    
+    <div class="user-dropdown">
+        <i class="fas fa-user"></i>
+        <div class="auth-dropdown-content">
+            <?php if(isset($_SESSION['user_id'])): ?>
+                <div class="welcome-message">
+                    <p>Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?>!</p>
+                    <p>You are logged in</p>
+                    <a href="logout.php" class="logout-link">Logout</a>
                 </div>
-            </div>
-            
-            <a href="wishlist.php" class="wishlist-icon"><i class="fas fa-heart"></i></a>
-            
-            <div class="cart-icon-container">
-                <a href="cart.php" class="cart-icon-link">
-                    <i class="fas fa-shopping-cart"></i>
-                    <span class="cart-count">
-                        <?php echo isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0; ?>
-                    </span>
-                </a>
-            </div>
-            
-            <div class="admin-dropdown">
-                <i class="fas fa-user-shield admin-icon" title="Admin Access"></i>
-                <div class="admin-dropdown-content">
-                    <?php if(isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in']): ?>
-                        <p>Logged in as Admin</p>
-                        <a href="CRUD/admin.php" class="admin-link">Dashboard</a><br>
-                        <a href="CRUD/admin.php?logout" class="admin-link">Logout</a>
-                    <?php else: ?>
-                        <p>Admin Access</p>
-                        <a href="CRUD/login.php" class="admin-link">Login</a>
-                    <?php endif; ?>
+            <?php else: ?>
+                <div class="form-box" id="signup-box">
+                    <h2>Sign Up</h2>
+                    <form action="signup_login.php" method="post">
+                        <?php if(isset($_SESSION['signup_error'])): ?>
+                            <p class="error"><?php echo $_SESSION['signup_error']; unset($_SESSION['signup_error']); ?></p>
+                        <?php endif; ?>
+                        <?php if(isset($_SESSION['signup_success'])): ?>
+                            <p class="success"><?php echo $_SESSION['signup_success']; unset($_SESSION['signup_success']); ?></p>
+                        <?php endif; ?>
+                        <input type="text" name="username" placeholder="Full Name" required>
+                        <input type="email" name="email" placeholder="Email" required>
+                        <input type="password" name="password" placeholder="Password" required>
+                        <input type="date" name="dob" required>
+                        <button type="submit" name="signup" class="auth-button">Sign Up</button>
+                    </form>
+                    <p>Already have an account? <a href="#" onclick="showLogin(); return false;">Login</a></p>
                 </div>
-            </div>
+            <?php endif; ?>
         </div>
+    </div>
+    
+    <a href="wishlist.php" class="wishlist-icon"><i class="fas fa-heart"></i></a>
+    
+    <div class="cart-icon-container">
+        <a href="cart.php" class="cart-icon-link">
+            <i class="fas fa-shopping-cart"></i>
+            <span class="cart-count">
+                <?php echo isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0; ?>
+            </span>
+        </a>
+    </div>
+    
+    <div class="admin-dropdown">
+        <i class="fas fa-user-shield admin-icon" title="Admin Access"></i>
+        <div class="admin-dropdown-content">
+            <?php if(isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in']): ?>
+                <p>Logged in as Admin</p>
+                <a href="CRUD/admin.php" class="admin-link">Dashboard</a><br>
+                <a href="CRUD/admin.php?logout" class="admin-link">Logout</a>
+            <?php else: ?>
+                <p>Admin Access</p>
+                <a href="CRUD/login.php" class="admin-link">Login</a>
+            <?php endif; ?>
+        </div>
+    </div>
+</div>
     </div>
 </nav>
     

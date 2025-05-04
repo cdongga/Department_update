@@ -6,33 +6,54 @@ if (!isset($_GET["id"])) {
     die("Product ID not provided.");
 }
 
-$product_id = $_GET["id"];
-$sql = "SELECT * FROM products WHERE product_id=?";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $product_id);
-$stmt->execute();
-$result = $stmt->get_result();
-$product = $result->fetch_assoc();
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $name = $_POST["name"];
-    $category_id = $_POST["category_id"];
-    $price = $_POST["price"];
-    $stock_quantity = $_POST["stock_quantity"];
-    $description = $_POST["description"];
-
-    $sql = "UPDATE products SET name=?, category_id=?, price=?, stock_quantity=?, description=? WHERE product_id=?";
+try {
+    $product_id = $_GET["id"];
+    $sql = "SELECT * FROM products WHERE product_id = :product_id";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sidisi", $name, $category_id, $price, $stock_quantity, $description, $product_id);
+    $stmt->bindParam(':product_id', $product_id, PDO::PARAM_INT);
+    $stmt->execute();
+    $product = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($stmt->execute()) {
-        header("Location: view_products.php");
-        exit();
-    } else {
-        echo "Error updating product.";
+    if (!$product) {
+        die("Product not found.");
     }
+
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        $name = $_POST["name"];
+        $category_id = $_POST["category_id"];
+        $price = $_POST["price"];
+        $stock_quantity = $_POST["stock_quantity"];
+        $description = $_POST["description"];
+
+        $sql = "UPDATE products SET 
+                name = :name, 
+                category_id = :category_id, 
+                price = :price, 
+                stock_quantity = :stock_quantity, 
+                description = :description 
+                WHERE product_id = :product_id";
+                
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':name', $name);
+        $stmt->bindParam(':category_id', $category_id, PDO::PARAM_INT);
+        $stmt->bindParam(':price', $price);
+        $stmt->bindParam(':stock_quantity', $stock_quantity, PDO::PARAM_INT);
+        $stmt->bindParam(':description', $description);
+        $stmt->bindParam(':product_id', $product_id, PDO::PARAM_INT);
+
+        if ($stmt->execute()) {
+            header("Location: view_products.php");
+            exit();
+        }
+    }
+} catch(PDOException $e) {
+    echo "Error: " . $e->getMessage();
 }
 ?>
+
+<!DOCTYPE html>
+<html lang="en">
+<!-- Rest of your HTML remains the same -->
 
 <!DOCTYPE html>
 <html lang="en">

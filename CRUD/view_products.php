@@ -2,8 +2,13 @@
 session_start();
 require '../db_connect.php';
 
-$sql = "SELECT * FROM products";
-$result = $conn->query($sql);
+try {
+    $sql = "SELECT * FROM products";
+    $stmt = $conn->query($sql);
+    $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch(PDOException $e) {
+    die("Error fetching products: " . $e->getMessage());
+}
 ?>
 
 <!DOCTYPE html>
@@ -11,7 +16,6 @@ $result = $conn->query($sql);
 <head>
     <title>Manage Products</title>
     <link rel="stylesheet" href="../CSS/admin.css">
-
 </head>
 <body>
     <h2>Product List</h2>
@@ -24,7 +28,7 @@ $result = $conn->query($sql);
             <th>Stock</th>
             <th>Actions</th>
         </tr>
-        <?php while ($row = $result->fetch_assoc()): ?>
+        <?php foreach ($products as $row): ?>
         <tr>
             <td><?= htmlspecialchars($row['product_id']) ?></td>
             <td><?= htmlspecialchars($row['name']) ?></td>
@@ -36,7 +40,7 @@ $result = $conn->query($sql);
                 <a href="delete_product.php?id=<?= $row['product_id'] ?>" onclick="return confirm('Are you sure?')">Delete</a>
             </td>
         </tr>
-        <?php endwhile; ?>
+        <?php endforeach; ?>
     </table>
 </body>
 </html>
