@@ -1,6 +1,6 @@
 <?php
 session_start();
-require '../db_connect.php';
+require '../db_connect_pdo.php'; // Changed to PDO connection
 
 if (!isset($_GET["id"])) {
     die("Product ID not provided.");
@@ -9,10 +9,10 @@ if (!isset($_GET["id"])) {
 try {
     $product_id = $_GET["id"];
     $sql = "SELECT * FROM products WHERE product_id = :product_id";
-    $stmt = $conn->prepare($sql);
+    $stmt = $pdo->prepare($sql);
     $stmt->bindParam(':product_id', $product_id, PDO::PARAM_INT);
     $stmt->execute();
-    $product = $stmt->fetch(PDO::FETCH_ASSOC);
+    $product = $stmt->fetch();
 
     if (!$product) {
         die("Product not found.");
@@ -33,7 +33,7 @@ try {
                 description = :description 
                 WHERE product_id = :product_id";
                 
-        $stmt = $conn->prepare($sql);
+        $stmt = $pdo->prepare($sql);
         $stmt->bindParam(':name', $name);
         $stmt->bindParam(':category_id', $category_id, PDO::PARAM_INT);
         $stmt->bindParam(':price', $price);
@@ -53,14 +53,9 @@ try {
 
 <!DOCTYPE html>
 <html lang="en">
-<!-- Rest of your HTML remains the same -->
-
-<!DOCTYPE html>
-<html lang="en">
 <head>
     <title>Edit Product</title>
     <link rel="stylesheet" href="../CSS/admin.css">
-
 </head>
 <body>
     <h2>Edit Product</h2>

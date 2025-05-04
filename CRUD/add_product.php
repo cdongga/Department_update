@@ -1,6 +1,6 @@
 <?php
 session_start();
-require '../db_connect.php';
+require '../db_connect_pdo.php'; // Changed to use PDO connection
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     try {
@@ -14,7 +14,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $sql = "INSERT INTO products (name, category_id, price, stock_quantity, description, image) 
                 VALUES (:name, :category_id, :price, :stock_quantity, :description, :image)";
 
-        $stmt = $conn->prepare($sql);
+        $stmt = $pdo->prepare($sql); // Using PDO here
         $stmt->bindParam(':name', $name);
         $stmt->bindParam(':category_id', $category_id, PDO::PARAM_INT);
         $stmt->bindParam(':price', $price);
@@ -30,26 +30,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 ?>
-
-
-<!DOCTYPE html>
-<html lang="en">
-    
-<head>
-    <title>Add Product</title>
-    <link rel="stylesheet" href="../CSS/admin.css">
-
-</head>
-<body>
-    <h2>Add New Product</h2>
-    <form action="" method="POST">
-        <input type="text" name="name" placeholder="Product Name" required>
-        <input type="number" name="category_id" placeholder="Category ID" required>
-        <input type="number" step="0.01" name="price" placeholder="Price (€)" required>
-        <input type="number" name="stock_quantity" placeholder="Stock Quantity" required>
-        <input type="text" name="image" placeholder="Image Filename (e.g., product.jpg)" required>
-        <textarea name="description" placeholder="Product Description"></textarea>
-        <button type="submit">Add Product</button>
-    </form>
-</body>
-</html>

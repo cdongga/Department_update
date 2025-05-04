@@ -29,7 +29,11 @@ if (isset($_GET['logout'])) {
         <ul>
             <li><a href="add_product.php">Create Product</a></li>
             <li><a href="view_products.php">View Products</a></li>
-        </ul>
+            <li><a href="add_product.php">Create Product</a></li>
+            <li><a href="view_products.php">View Products</a></li>
+            <li><a href="view_users.php">Manage Users</a></li>
+            <li><a href="view_orders.php">Manage Orders</a></li>
+            </ul>
     </nav>
 </body>
 </html>

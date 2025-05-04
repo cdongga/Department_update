@@ -1,11 +1,11 @@
 <?php
 session_start();
-require '../db_connect.php';
+require '../db_connect_pdo.php'; // Changed to PDO connection
 
 try {
     $sql = "SELECT * FROM products";
-    $stmt = $conn->query($sql);
-    $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stmt = $pdo->query($sql);
+    $products = $stmt->fetchAll();
 } catch(PDOException $e) {
     die("Error fetching products: " . $e->getMessage());
 }

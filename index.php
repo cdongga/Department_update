@@ -144,8 +144,7 @@ session_start();
         <div class="admin-dropdown-content">
             <?php if(isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in']): ?>
                 <p>Logged in as Admin</p>
-                <a href="CRUD/admin.php" class="admin-link">Dashboard</a><br>
-                <a href="CRUD/admin.php?logout" class="admin-link">Logout</a>
+                <a href="CRUD/admin.php?logout" class="admin-link">Login</a>
             <?php else: ?>
                 <p>Admin Access</p>
                 <a href="CRUD/login.php" class="admin-link">Login</a>

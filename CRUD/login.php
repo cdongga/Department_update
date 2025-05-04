@@ -1,20 +1,19 @@
 <?php
 session_start();
-require '../db_connect.php';
+require '../db_connect_pdo.php'; // Changed to PDO connection
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     try {
         $username = $_POST["username"];
         $password = $_POST["password"];
 
-        // Using prepared statement even for hardcoded credentials
-        $sql = "SELECT * FROM admins WHERE username = :username AND password = :password";
+        $sql = "SELECT * FROM admins WHERE username = :username";
         $stmt = $pdo->prepare($sql);
         $stmt->bindParam(':username', $username);
-        $stmt->bindParam(':password', $password);
         $stmt->execute();
+        $admin = $stmt->fetch();
         
-        if ($stmt->rowCount() > 0) {
+        if ($admin && password_verify($password, $admin['password'])) {
             $_SESSION['admin_logged_in'] = true;
             header("Location: admin.php");
             exit();
@@ -26,8 +25,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 ?>
-
-
 
 <!DOCTYPE html>
 <html lang="en">
