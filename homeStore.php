@@ -284,7 +284,8 @@ include 'db_connect.php';
             ?>
         </div>
 
-        <!-- Review Form (no login required) -->
+        <?php if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']): ?>
+<!-- Review Form (no login required) -->
         <div class="review-form">
             <h3>Write a Review</h3>
             <form action="submit_review.php" method="post">
@@ -315,6 +316,11 @@ include 'db_connect.php';
                 <button type="submit" class="add-to-bag">Submit Review</button>
             </form>
         </div>
+<?php else: ?>
+    <div class="review-form">
+        <p class="login-prompt">You must <a href="signup_login.php">log in</a> to write a review.</p>
+    </div>
+<?php endif; ?>
     <?php endif; ?>
 </div>
 

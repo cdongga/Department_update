@@ -157,7 +157,7 @@ if (!empty($_SESSION['cart']) && is_array($_SESSION['cart'])) {
                 </table>
                 
                 <div class="cart-actions">
-                    <button type="submit" name="update_cart" class="update-btn">Update Cart</button>
+                    
                     <a href="checkout.php" class="checkout-btn">Proceed to Checkout</a>
                 </div>
             </form>
