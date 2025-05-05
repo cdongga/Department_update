@@ -284,43 +284,71 @@ include 'db_connect.php';
             ?>
         </div>
 
-        <?php if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']): ?>
-<!-- Review Form (no login required) -->
+        <!-- Review Form (no login required) -->
         <div class="review-form">
             <h3>Write a Review</h3>
-            <form action="submit_review.php" method="post">
-                <input type="hidden" name="product_id" value="<?= htmlspecialchars($_GET['product_id']) ?>">
-                
-                <div class="form-group">
-                    <label for="reviewer_name">Your Name:</label>
-                    <input type="text" id="reviewer_name" name="reviewer_name" required>
-                </div>
-                
-                <div class="rating-input">
-                    <label>Rating:</label>
-                    <select name="rating" required>
-                        <option value="">Select rating</option>
-                        <option value="1">1 Star</option>
-                        <option value="2">2 Stars</option>
-                        <option value="3">3 Stars</option>
-                        <option value="4">4 Stars</option>
-                        <option value="5">5 Stars</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label for="review_text">Your Review:</label>
-                    <textarea id="review_text" name="review_text" rows="4" required></textarea>
-                </div>
-                
-                <button type="submit" class="add-to-bag">Submit Review</button>
-            </form>
+            
+<?php if (isset($_SESSION['user_id'])): ?>
+    
+<?php if (isset($_SESSION['user_id'])): ?>
+    
+<?php if (isset($_SESSION['user_id'])): ?>
+    
+<?php if (isset($_SESSION['user_id'])): ?>
+    <form action="submit_review.php" method="post">
+        <input type="hidden" name="product_id" value="<?= htmlspecialchars($_GET['product_id']) ?>">
+
+        <div class="form-group">
+            <label for="reviewer_name">Your Name:</label>
+            <input type="text" id="reviewer_name" name="reviewer_name" required>
         </div>
+
+        <div class="rating-input">
+            <label>Rating:</label>
+            <select name="rating" required>
+                <option value="">Select rating</option>
+                <option value="1">1 Star</option>
+                <option value="2">2 Stars</option>
+                <option value="3">3 Stars</option>
+                <option value="4">4 Stars</option>
+                <option value="5">5 Stars</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="review_text">Your Review:</label>
+            <textarea id="review_text" name="review_text" rows="4" required></textarea>
+        </div>
+
+        <button type="submit" class="add-to-bag">Submit Review</button>
+    </form>
 <?php else: ?>
-    <div class="review-form">
-        <p class="login-prompt">You must <a href="signup_login.php">log in</a> to write a review.</p>
+    <div class="login-prompt" style="margin-top: 10px;">
+        <a href="signup_login.php" class="add-to-bag">Log in to make a review</a>
     </div>
 <?php endif; ?>
+
+<?php else: ?>
+    <div class="login-prompt" style="margin-top: 10px;">
+        <a href="signup_login.php" class="add-to-bag">Log in to make a review</a>
+    </div>
+<?php endif; ?>
+
+<?php else: ?>
+    <div class="login-prompt" style="margin-top: 10px;">
+        <p>You must be logged in to leave a review.</p>
+        <a href="signup_login.php" class="add-to-bag">Log in to make a review</a>
+    </div>
+<?php endif; ?>
+
+<?php else: ?>
+    <div class="login-prompt">
+        <p>You must be logged in to leave a review.</p>
+        <a href="signup_login.php" class="add-to-bag">Log in to make a review</a>
+    </div>
+<?php endif; ?>
+
+        </div>
     <?php endif; ?>
 </div>
 

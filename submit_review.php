@@ -2,11 +2,6 @@
 session_start();
 require 'db_connect.php';
 
-if (!isset($_SESSION['logged_in']) || !$_SESSION['logged_in']) {
-    $_SESSION['review_error'] = "You must be logged in to submit a review.";
-    header("Location: homeStore.php?product_id=" . $_POST['product_id'] . "#reviews");
-    exit();
-}
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['product_id'])) {
     $product_id = intval($_POST['product_id']);
     $reviewer_name = trim($_POST['reviewer_name']);
